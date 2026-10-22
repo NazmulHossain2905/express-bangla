@@ -44,7 +44,7 @@ export default function RootLayout({
   return (
     <html lang="bn" suppressHydrationWarning>
       <body
-        className={`${notoBengali.variable} ${jetbrains.variable} antialiased bg-background text-foreground`}
+        className={`${notoBengali.className} ${jetbrains.variable} antialiased bg-background text-foreground`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
