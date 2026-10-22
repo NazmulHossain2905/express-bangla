@@ -1,5 +1,10 @@
-import { CoursePlatform } from "@/components/course/platform";
+import { DocsShell } from "@/components/course/docs-shell";
+import { Home } from "@/components/course/home";
 
 export default function Page() {
-  return <CoursePlatform />;
+  return (
+    <DocsShell>
+      <Home />
+    </DocsShell>
+  );
 }

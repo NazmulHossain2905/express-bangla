@@ -1,11 +1,6 @@
-"use client";
-
-import {
-  Lightbulb,
-  AlertTriangle,
-  Info,
-} from "lucide-react";
+import { Lightbulb, AlertTriangle, Info } from "lucide-react";
 import type { ContentBlock } from "@/lib/course/types";
+import { slugifyHeading } from "@/lib/search";
 import { CodeBlock } from "./code-block";
 
 function Callout({
@@ -53,13 +48,37 @@ function Callout({
 
 export function BlockRenderer({ block }: { block: ContentBlock }) {
   switch (block.type) {
-    case "heading":
+    case "heading": {
+      const id = slugifyHeading(block.content);
       return (
-        <h2 className="text-xl md:text-2xl font-bold mt-9 mb-3 text-foreground flex items-start gap-2.5">
+        <h2
+          id={id}
+          className="group text-xl md:text-2xl font-bold mt-9 mb-3 text-foreground flex items-start gap-2.5 scroll-mt-24"
+        >
           <span className="mt-1.5 h-5 w-1.5 rounded-full bg-primary shrink-0" aria-hidden />
-          <span>{block.content}</span>
+          <span className="flex-1">{block.content}</span>
+          <a
+            href={`#${id}`}
+            aria-label="এই অংশের সরাসরি লিংক"
+            className="mt-1.5 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity text-muted-foreground hover:text-primary"
+          >
+            <svg
+              className="size-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+            </svg>
+          </a>
         </h2>
       );
+    }
 
     case "text":
       return (
@@ -99,6 +118,7 @@ export function BlockRenderer({ block }: { block: ContentBlock }) {
           language={block.language}
           filename={block.filename}
           output={block.output}
+          variant={block.variant}
         />
       );
 

@@ -101,4 +101,52 @@ export const quizQuestions: QuizQuestion[] = [
     explanation:
       "express.Router() দিয়ে ছোট আলাদা রাউটিং সিস্টেম বানানো হয়, যাকে নিজস্ব ফাইলে লিখে app.use(\"/prefix\", router) দিয়ে মূল অ্যাপে মাউন্ট করা যায়।",
   },
+  {
+    question: "package.json-এ \"type\": \"module\" সেট করলে কী হয়?",
+    options: [
+      "প্রজেক্টের .js ফাইলগুলো ES Modules হিসেবে চলে (import/export)",
+      "Express ইনস্টল হয়ে যায়",
+      "প্রজেক্ট TypeScript হয়ে যায়",
+      "নতুন ডিপেন্ডেন্সি ইনস্টল হয়",
+    ],
+    answerIndex: 0,
+    explanation:
+      "\"type\": \"module\" বলে Node.js-কে: এই প্রজেক্টের .js ফাইলগুলো ES Modules — অর্থাৎ import express from \"express\" লেখা যাবে। এটা ছাড়া .js ফাইলে import লিখলে SyntaxError আসে।",
+  },
+  {
+    question: "ES Modules-এ নিজের প্রজেক্টের ফাইল import করার সময় কী মনে রাখতে হয়?",
+    options: [
+      "ফাইলের নাম ছোট হাতের অক্ষরে লিখতে হয়",
+      "এক্সটেনশনসহ পুরো পাথ লিখতে হয় — import \"./routes/books.js\"",
+      "শুধু ফোল্ডারের নাম লিখলেই হয়",
+      "require() ব্যবহার করতে হয়",
+    ],
+    answerIndex: 1,
+    explanation:
+      "CommonJS-এ require(\"./routes/books\") চলত, কিন্তু ES Modules-এ এক্সটেনশন বাধ্যতামূলক — ভুলে গেলে ERR_MODULE_NOT_FOUND এরর! এটাই দুই সিস্টেমের সবচেয়ে ঘন ঘন ধাক্কা।",
+  },
+  {
+    question: "Express 5-এ async হ্যান্ডলারের ভেতরে এরর হলে (await ব্যর্থ হলে) কী হয়?",
+    options: [
+      "সার্ভার ক্র্যাশ করে",
+      "এররটি স্বয়ংক্রিয়ভাবে এরর-হ্যান্ডলিং মিডলওয়্যারে চলে যায়",
+      "রেসপন্স হিসেবে HTML পেজ যায়",
+      "কিছুই হয় না, রিকোয়েস্ট ঝুলে থাকে",
+    ],
+    answerIndex: 1,
+    explanation:
+      "Express 5-এর সবচেয়ে আরামদায়ক উন্নতি: async হ্যান্ডলারের rejected promise স্বয়ংক্রিয়ভাবে এরর হ্যান্ডলারে পাঠানো হয় — try/catch + next(err) লেখার দরকার নেই (সেটা ছিল Express 4-এর যুগের কাজ)।",
+  },
+  {
+    question: "TypeScript-এ req.body-র জন্য interface লিখলেই কি ভুল ডেটা আটকায়?",
+    options: [
+      "হ্যাঁ — টাইপ সব যাচাই করে",
+      "না — টাইপ কম্পাইলের পর মুছে যায়; রানটাইম যাচাইয়ের জন্য Zod-জাতীয় ভ্যালিডেশন লাগে",
+      "শুধু বড় প্রজেক্টে আটকায়",
+      "শুধু TypeScript 7-এ আটকায়",
+    ],
+    answerIndex: 1,
+    explanation:
+      "TypeScript-এর টাইপ কম্পাইল-টাইমের জিনিস — জাভাস্ক্রিপ্টে কম্পাইল হওয়ার সময় মুছে যায়। বাইরের HTTP রিকোয়েস্টের ডেটা রানটাইমে আসে, তাই Zod-এর মতো রানটাইম ভ্যালিডেশন আলাদাভাবেই দরকার — টাইপ আর ভ্যালিডেশন দুই হাত।",
+  },
 ];

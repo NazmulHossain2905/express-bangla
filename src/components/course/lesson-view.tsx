@@ -1,53 +1,22 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-import {
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle2,
-  Circle,
-  Clock,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import type { Lesson } from "@/lib/course/types";
 import { BlockRenderer } from "./blocks";
+import { CompleteButton, LessonStatusBadge } from "./lesson-progress";
 
 interface LessonViewProps {
   lesson: Lesson;
   index: number;
   total: number;
-  isCompleted: boolean;
-  showComplete?: boolean;
-  prevTitle?: string;
-  nextTitle?: string;
-  onToggleComplete: () => void;
-  onPrev: () => void;
-  onNext: () => void;
+  prev?: { id: string; title: string };
+  next?: { id: string; title: string };
 }
 
-export function LessonView({
-  lesson,
-  index,
-  total,
-  isCompleted,
-  showComplete = true,
-  prevTitle,
-  nextTitle,
-  onToggleComplete,
-  onPrev,
-  onNext,
-}: LessonViewProps) {
-  const topRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [lesson.id]);
-
+export function LessonView({ lesson, index, total, prev, next }: LessonViewProps) {
   return (
     <article className="max-w-3xl">
-      <div ref={topRef} className="scroll-mt-28" />
-
       {/* Header */}
       <div className="mb-8 pb-6 border-b">
         <div className="flex flex-wrap items-center gap-2 mb-3">
@@ -58,12 +27,7 @@ export function LessonView({
             <Clock className="size-3" />
             {lesson.duration}
           </Badge>
-          {isCompleted && (
-            <Badge className="gap-1 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-0 hover:bg-emerald-500/15">
-              <CheckCircle2 className="size-3" />
-              সম্পন্ন
-            </Badge>
-          )}
+          <LessonStatusBadge lessonId={lesson.id} />
         </div>
         <h1 className="text-2xl md:text-3xl font-extrabold leading-snug mb-2">
           {lesson.title}
@@ -79,62 +43,40 @@ export function LessonView({
       </div>
 
       {/* Complete button */}
-      {showComplete && (
-        <div className="my-8 flex justify-center">
-        <Button
-          size="lg"
-          variant={isCompleted ? "outline" : "default"}
-          onClick={onToggleComplete}
-          className={`gap-2 font-semibold min-h-[44px] px-8 ${
-            isCompleted
-              ? "border-emerald-500/50 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10"
-              : ""
-          }`}
-        >
-          {isCompleted ? (
-            <>
-              <CheckCircle2 className="size-5" />
-              পাঠ সম্পন্ন করা হয়েছে
-            </>
-          ) : (
-            <>
-              <Circle className="size-5" />
-              এই পাঠটি সম্পন্ন করেছি
-            </>
-          )}
-        </Button>
-        </div>
-      )}
+      {!lesson.noProgress && <CompleteButton lessonId={lesson.id} />}
 
       {/* Prev / Next */}
       <div className="flex items-stretch justify-between gap-3 pb-4">
-        {prevTitle ? (
+        {prev ? (
           <Button
+            asChild
             variant="outline"
-            onClick={onPrev}
             className="gap-2 min-h-[48px] max-w-[48%] justify-start"
-            aria-label="আগের পাঠে যান"
           >
-            <ArrowLeft className="size-4 shrink-0" />
-            <span className="flex flex-col items-start overflow-hidden text-left">
-              <span className="text-[10px] text-muted-foreground leading-none">আগের পাঠ</span>
-              <span className="text-sm truncate max-w-full">{prevTitle}</span>
-            </span>
+            <Link href={`/docs/${prev.id}`} aria-label="আগের পাঠে যান">
+              <ArrowLeft className="size-4 shrink-0" />
+              <span className="flex flex-col items-start overflow-hidden text-left">
+                <span className="text-[10px] text-muted-foreground leading-none">
+                  আগের পাঠ
+                </span>
+                <span className="text-sm truncate max-w-full">{prev.title}</span>
+              </span>
+            </Link>
           </Button>
         ) : (
           <div className="flex-1" />
         )}
-        {nextTitle ? (
-          <Button
-            onClick={onNext}
-            className="gap-2 min-h-[48px] max-w-[48%] justify-end"
-            aria-label="পরের পাঠে যান"
-          >
-            <span className="flex flex-col items-end overflow-hidden text-right">
-              <span className="text-[10px] text-primary-foreground/70 leading-none">পরের পাঠ</span>
-              <span className="text-sm truncate max-w-full">{nextTitle}</span>
-            </span>
-            <ArrowRight className="size-4 shrink-0" />
+        {next ? (
+          <Button asChild className="gap-2 min-h-[48px] max-w-[48%] justify-end">
+            <Link href={`/docs/${next.id}`} aria-label="পরের পাঠে যান">
+              <span className="flex flex-col items-end overflow-hidden text-right">
+                <span className="text-[10px] text-primary-foreground/70 leading-none">
+                  পরের পাঠ
+                </span>
+                <span className="text-sm truncate max-w-full">{next.title}</span>
+              </span>
+              <ArrowRight className="size-4 shrink-0" />
+            </Link>
           </Button>
         ) : (
           <div className="flex-1" />

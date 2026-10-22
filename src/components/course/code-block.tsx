@@ -8,6 +8,7 @@ import bash from "react-syntax-highlighter/dist/esm/languages/prism/bash";
 import json from "react-syntax-highlighter/dist/esm/languages/prism/json";
 import markup from "react-syntax-highlighter/dist/esm/languages/prism/markup";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import type { CodeVariant } from "@/lib/course/types";
 
 SyntaxHighlighter.registerLanguage("javascript", js);
 SyntaxHighlighter.registerLanguage("bash", bash);
@@ -16,10 +17,31 @@ SyntaxHighlighter.registerLanguage("markup", markup);
 
 const LANG_MAP: Record<string, string> = {
   js: "javascript",
+  ts: "typescript",
+  typescript: "typescript",
   bash: "bash",
+  sh: "bash",
   json: "json",
   html: "markup",
   text: "text",
+};
+
+const VARIANT_META: Record<CodeVariant, { label: string; title: string; cls: string }> = {
+  cjs: {
+    label: "CJS",
+    title: "CommonJS উদাহরণ",
+    cls: "bg-sky-500/15 text-sky-300 border-sky-400/30",
+  },
+  esm: {
+    label: "ESM",
+    title: "ES Modules উদাহরণ",
+    cls: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30",
+  },
+  ts: {
+    label: "TS",
+    title: "TypeScript উদাহরণ",
+    cls: "bg-blue-500/15 text-blue-300 border-blue-400/30",
+  },
 };
 
 interface CodeBlockProps {
@@ -27,22 +49,37 @@ interface CodeBlockProps {
   language: string;
   filename?: string;
   output?: string;
+  variant?: CodeVariant;
 }
 
-export function CodeBlock({ code, language, filename, output }: CodeBlockProps) {
+export function CodeBlock({ code, language, filename, output, variant }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1600);
     } catch {
-      // clipboard unavailable — silently ignore
+      // Clipboard API অনুপলব্ধ (পারমিশন/পুরনো ব্রাউজার) — legacy fallback
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = code;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        setCopied(true);
+      } catch {
+        return; // কপি সম্ভব হলো না — চুপচাপ থাকুক
+      }
     }
+    setTimeout(() => setCopied(false), 1600);
   }, [code]);
 
-  const lang = LANG_MAP[language] ?? "text";
+  const lang = LANG_MAP[language.toLowerCase()] ?? "text";
+  const meta = variant ? VARIANT_META[variant] : null;
 
   return (
     <div className="my-5 rounded-xl overflow-hidden border border-zinc-700/60 shadow-sm">
@@ -60,6 +97,14 @@ export function CodeBlock({ code, language, filename, output }: CodeBlockProps) 
             </span>
           ) : (
             <span className="text-xs uppercase tracking-wide text-zinc-500">{language}</span>
+          )}
+          {meta && (
+            <span
+              title={meta.title}
+              className={`shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-bold leading-none tracking-wide ${meta.cls}`}
+            >
+              {meta.label}
+            </span>
           )}
         </div>
         <button
@@ -84,7 +129,7 @@ export function CodeBlock({ code, language, filename, output }: CodeBlockProps) 
       {/* Code */}
       <div className="bg-zinc-900">
         <SyntaxHighlighter
-          language={lang}
+          language={lang === "typescript" ? "javascript" : lang}
           style={vscDarkPlus}
           customStyle={{
             background: "transparent",

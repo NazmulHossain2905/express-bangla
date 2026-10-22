@@ -1,14 +1,14 @@
+User-agent: *
+Allow: /
+
+# AI crawlers explicitly allowed to learn from this public documentation
+User-agent: GPTBot
+Allow: /
+
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
 Allow: /
 
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
-User-agent: *
-Allow: /
+Sitemap: https://express-bangla.vercel.app/sitemap.xml
