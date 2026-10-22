@@ -220,6 +220,7 @@ export function SearchDialog({
       <DialogContent
         aria-describedby={undefined}
         className="max-w-xl top-[15%] translate-y-0 p-0 gap-0 overflow-hidden rounded-xl border shadow-2xl"
+        showCloseButton={false}
       >
         <DialogHeader className="sr-only">
           <DialogTitle>ডকুমেন্টেশন খুঁজুন</DialogTitle>
@@ -231,8 +232,8 @@ export function SearchDialog({
               ref={inputRef}
               value={query}
               onValueChange={setQuery}
-              placeholder="পাঠ, টপিক বা কীওয়ার্ড লিখুন… (যেমন: middleware, esm, টাইপস্ক্রিপ্ট)"
-              className="flex h-12 w-full border-0 bg-transparent text-[15px] placeholder:text-muted-foreground/70 focus-visible:ring-0 focus-visible:ring-offset-0"
+              placeholder="পাঠ, টপিক বা কীওয়ার্ড লিখুন - (যেমন: middleware, esm, টাইপস্ক্রিপ্ট)"
+              className="flex h-12 w-full truncate border-0 bg-transparent text-[15px] placeholder:text-muted-foreground/70 focus-visible:ring-0 focus-visible:ring-offset-0"
             />
             <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground sm:flex">
               ESC

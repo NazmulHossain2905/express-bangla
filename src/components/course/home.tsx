@@ -46,13 +46,17 @@ const FEATURES = [
   },
 ];
 
+function bnToAscii(s: string): string {
+  return s.replace(/[০-৯]/g, (d) => String(BN_DIGITS.indexOf(d)));
+}
+
 export function Home() {
   const totalMinutes = trackableLessons.reduce((acc, l) => {
-    const m = l.duration.match(/\d+/);
+    const m = bnToAscii(l.duration).match(/\d+/);
     return acc + (m ? Number(m[0]) : 0);
   }, 0);
 
-  const hours = Math.round((totalMinutes / 60) * 10) / 10;
+  const hours = Math.round(totalMinutes / 60);
 
   return (
     <div>

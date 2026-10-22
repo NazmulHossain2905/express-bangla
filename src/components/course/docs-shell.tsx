@@ -47,7 +47,7 @@ function SidebarNav({ active, completed }: { active: string; completed: string[]
       </Link>
 
       {sections.map((section) => (
-        <div key={section.id}>
+        <div key={section.id} className="flex flex-col gap-1">
           <p className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground px-3 pt-4 pb-1.5">
             {section.title}
           </p>

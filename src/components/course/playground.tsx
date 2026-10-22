@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Braces,
   Clock3,
@@ -10,10 +13,7 @@ import {
   RotateCcw,
   Send,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 import { CodeBlock } from "./code-block";
 
 type Method = "GET" | "POST" | "PUT" | "DELETE";
@@ -104,7 +104,7 @@ export function Playground() {
   const [status, setStatus] = useState<number | null>(null);
   const [timeMs, setTimeMs] = useState<number | null>(null);
   const [response, setResponse] = useState<string>(
-    "এখনো কোনো রিকোয়েস্ট পাঠানো হয়নি। উপরের বাটনে চেপে শুরু করুন!"
+    "এখনো কোনো রিকোয়েস্ট পাঠানো হয়নি। উপরের বাটনে চেপে শুরু করুন!",
   );
   const [history, setHistory] = useState<HistoryItem[]>([]);
 
@@ -128,13 +128,18 @@ export function Playground() {
         init.body = body;
       }
 
-      const res = await fetch("/api/playground?target=" + encodeURIComponent(target), init);
+      const res = await fetch(
+        "/api/playground?target=" + encodeURIComponent(target),
+        init,
+      );
       const ms = Math.round(performance.now() - started);
       const text = await res.text();
 
       let pretty: string;
       try {
-        pretty = text ? JSON.stringify(JSON.parse(text), null, 2) : "(কোনো বডি নেই — স্ট্যাটাস কোডটিই রেসপন্স)";
+        pretty = text
+          ? JSON.stringify(JSON.parse(text), null, 2)
+          : "(কোনো বডি নেই — স্ট্যাটাস কোডটিই রেসপন্স)";
       } catch {
         pretty = text || "(কোনো বডি নেই)";
       }
@@ -149,7 +154,9 @@ export function Playground() {
     } catch {
       setStatus(0);
       setTimeMs(null);
-      setResponse("রিকোয়েস্ট পাঠানো ব্যর্থ হয়েছে — ইন্টারনেট কানেকশন চেক করুন।");
+      setResponse(
+        "রিকোয়েস্ট পাঠানো ব্যর্থ হয়েছে — ইন্টারনেট কানেকশন চেক করুন।",
+      );
     } finally {
       setLoading(false);
     }
@@ -170,12 +177,15 @@ export function Playground() {
       <div className="rounded-xl border border-primary/25 bg-primary/5 p-4 md:p-5 mb-6 flex gap-3">
         <FlaskConical className="size-5 text-primary shrink-0 mt-0.5" />
         <div className="text-sm leading-relaxed text-foreground/85">
-          <p className="font-bold text-foreground mb-1">স্বাগতম লাইভ প্লেগ্রাউন্ডে!</p>
+          <p className="font-bold text-foreground mb-1">
+            স্বাগতম লাইভ প্লেগ্রাউন্ডে!
+          </p>
           <p>
-            এটি একটি <span className="font-semibold">আসল চলমান সার্ভার</span> — REST API পাঠে
-            যে কোড লিখেছি ঠিক সেটিই এখানে চলছে (ডেটাবেসের বদলে মেমোরি অ্যারে)। নিচের
-            বাটনগুলো দিয়ে রিকোয়েস্ট পাঠান, স্ট্যাটাস কোড ও JSON রেসপন্স সাথে সাথে দেখুন। ভুল
-            করে বই মুছে ফেললে ডর নেই — রিসেট বাটন আছে!
+            এটি একটি <span className="font-semibold">আসল চলমান সার্ভার</span> —
+            REST API পাঠে যে কোড লিখেছি ঠিক সেটিই এখানে চলছে (ডেটাবেসের বদলে
+            মেমোরি অ্যারে)। নিচের বাটনগুলো দিয়ে রিকোয়েস্ট পাঠান, স্ট্যাটাস কোড
+            ও JSON রেসপন্স সাথে সাথে দেখুন। ভুল করে বই মুছে ফেললে ডর নেই — রিসেট
+            বাটন আছে!
           </p>
         </div>
       </div>
@@ -189,13 +199,15 @@ export function Playground() {
         <div className="p-4 space-y-4">
           {/* Method buttons */}
           <div>
-            <p className="text-xs font-semibold text-muted-foreground mb-2">HTTP মেথড</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">
+              HTTP মেথড
+            </p>
             <div className="grid grid-cols-4 gap-2">
               {(Object.keys(METHOD_COLORS) as Method[]).map((m) => (
                 <button
                   key={m}
                   onClick={() => changeMethod(m)}
-                  className={`rounded-lg py-2.5 text-sm font-bold font-[family-name:var(--font-jetbrains)] transition-all min-h-[44px] ${
+                  className={`rounded-lg py-2.5 text-sm font-bold font-(family-name:--font-jetbrains) transition-all min-h-11 ${
                     method === m
                       ? METHOD_COLORS[m] + " shadow-md"
                       : "bg-muted text-muted-foreground hover:bg-muted/70 hover:text-foreground"
@@ -211,15 +223,17 @@ export function Playground() {
 
           {/* Path */}
           <div>
-            <p className="text-xs font-semibold text-muted-foreground mb-2">এন্ডপয়েন্ট (URL পাথ)</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">
+              এন্ডপয়েন্ট (URL পাথ)
+            </p>
             <div className="flex gap-2">
-              <span className="hidden sm:flex items-center px-3 rounded-md bg-muted text-muted-foreground text-sm font-[family-name:var(--font-jetbrains)]">
+              <span className="hidden sm:flex whitespace-nowrap items-center px-3 rounded-md bg-muted text-muted-foreground text-sm font-(family-name:--font-jetbrains)">
                 http://localhost:3000
               </span>
               <Input
                 value={path}
                 onChange={(e) => setPath(e.target.value)}
-                className="font-[family-name:var(--font-jetbrains)] min-h-[44px]"
+                className="font-(family-name:--font-jetbrains) min-h-11"
                 placeholder="/books বা /books/2"
                 aria-label="এন্ডপয়েন্ট পাথ"
               />
@@ -229,7 +243,7 @@ export function Playground() {
                 <button
                   key={p}
                   onClick={() => setPath(p)}
-                  className="text-xs rounded-full border px-3 py-1 text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors font-[family-name:var(--font-jetbrains)]"
+                  className="text-xs rounded-full border px-3 py-1 text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors font-(family-name:--font-jetbrains)"
                 >
                   {p}
                 </button>
@@ -248,14 +262,18 @@ export function Playground() {
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 rows={5}
-                className="font-[family-name:var(--font-jetbrains)] text-sm"
+                className="font-(family-name:--font-jetbrains) text-sm"
                 aria-label="JSON বডি"
               />
             </div>
           )}
 
           <div className="flex flex-wrap gap-2">
-            <Button onClick={send} disabled={loading} className="gap-2 font-bold min-h-[44px] px-6">
+            <Button
+              onClick={send}
+              disabled={loading}
+              className="gap-2 font-bold min-h-11 px-6"
+            >
               {loading ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />
@@ -271,7 +289,7 @@ export function Playground() {
             <Button
               variant="outline"
               onClick={() => setHistory([])}
-              className="gap-2 min-h-[44px]"
+              className="gap-2 min-h-11"
               aria-label="রিকোয়েস্ট হিস্টোরি মুছুন"
             >
               <RotateCcw className="size-4" />
@@ -287,9 +305,13 @@ export function Playground() {
           <span className="font-bold text-sm">রেসপন্স</span>
           {status !== null && (
             <span
-              className={`text-xs font-bold font-[family-name:var(--font-jetbrains)] rounded-md px-2 py-1 ${statusStyle}`}
+              className={`text-xs font-bold font-(family-name:--font-jetbrains) rounded-md px-2 py-1 ${statusStyle}`}
             >
-              {status === 204 ? "204 No Content" : status === 0 ? "FAILED" : status}
+              {status === 204
+                ? "204 No Content"
+                : status === 0
+                  ? "FAILED"
+                  : status}
             </span>
           )}
           {timeMs !== null && (
@@ -299,10 +321,12 @@ export function Playground() {
             </span>
           )}
         </div>
-        <div className="bg-zinc-900 p-4 min-h-[140px] overflow-x-auto">
+        <div className="bg-zinc-900 p-4 min-h-35 overflow-x-auto">
           <pre
-            className={`text-xs leading-relaxed font-[family-name:var(--font-jetbrains)] whitespace-pre-wrap ${
-              status !== null && status >= 400 ? "text-amber-300" : "text-emerald-300"
+            className={`text-xs leading-relaxed font-(family-name:--font-jetbrains) whitespace-pre-wrap ${
+              status !== null && status >= 400
+                ? "text-amber-300"
+                : "text-emerald-300"
             }`}
           >
             {response}
@@ -321,13 +345,27 @@ export function Playground() {
               <Badge
                 key={i}
                 variant="outline"
-                className="font-[family-name:var(--font-jetbrains)] gap-1.5 py-1.5"
+                className="font-(family-name:--font-jetbrains) gap-1.5 py-1.5"
               >
-                <span className={h.method === "GET" ? "text-emerald-500" : h.method === "POST" ? "text-amber-500" : h.method === "PUT" ? "text-sky-500" : "text-red-500"}>
+                <span
+                  className={
+                    h.method === "GET"
+                      ? "text-emerald-500"
+                      : h.method === "POST"
+                        ? "text-amber-500"
+                        : h.method === "PUT"
+                          ? "text-sky-500"
+                          : "text-red-500"
+                  }
+                >
                   {h.method}
                 </span>
                 {h.path}
-                <span className={h.status < 300 ? "text-emerald-500" : "text-amber-500"}>
+                <span
+                  className={
+                    h.status < 300 ? "text-emerald-500" : "text-amber-500"
+                  }
+                >
                   {h.status}
                 </span>
               </Badge>
